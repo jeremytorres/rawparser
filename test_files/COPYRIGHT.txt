@@ -1,0 +1,6 @@
+All images in this directory free for use per the Creative Common License (CCL).
+See http://creativecommons.org for more information.
+
+Note: 
+little_endian_no_jpeg.NEF was obtained from http://www.rawsamples.ch which also provides
+RAW files per the CCL. 
