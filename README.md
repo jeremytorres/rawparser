@@ -1,4 +1,7 @@
 # RawParser -- A camera RAW file parsing utility
+
+[![Build Status](https://travis-ci.org/jeremytorres/rawparser.png)](https://travis-ci.org/jeremytorres/rawparser)
+
 ## Overview
 RawParser is a GO library for extracting: the embedded JPEGs from a camera RAW file and metadata.  It's current incarnation parses TIFF-based RAW files.  There are existing tools that perform this or similar functionality; however, the reasons for creating this tool:
 
