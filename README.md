@@ -1,4 +1,3 @@
-# RawParser -- A camera RAW file parsing utility
 
 [![Build Status](https://travis-ci.org/jeremytorres/rawparser.png)](https://travis-ci.org/jeremytorres/rawparser)
 
