@@ -9,5 +9,5 @@ before_install:
  - sudo dpkg-query -L libjpeg-turbo8-dev
  - sudo dpkg-query -L libturbojpeg
  - ls -alt /usr/include; ls -alt /usr/lib
-script: go test -v && go test -v -tags jpeg & go test -v -tags turbojpeg
+script: go test -v && go test -v -tags jpeg && go test -v -tags turbojpeg
 
