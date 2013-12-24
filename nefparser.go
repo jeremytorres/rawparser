@@ -21,12 +21,6 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// Package nefparser provides based parsing functionaity for the Nikon Electronic Format
-// (NEF).  For a specified NEF, the EXIF create time and orientation are parsed and the
-// embedded JPEG is exracted.  The following are resources on NEF file details:
-//
-// NEF-specific information: http://lclevy.free.fr/nef/
-// TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 package rawparser
 
 import (
@@ -37,6 +31,8 @@ import (
 	"time"
 )
 
+// NefParserKey is a unique identifier for the NEF raw file parser.
+// This key may be used as a key the RawParsers map.
 const NefParserKey = "NEF"
 
 // nefHeader is a struct representing a NEF file header.
@@ -51,6 +47,12 @@ type nefHeader struct {
 
 // NefParser is the struct defining the state of
 // the RawFile concept.  Implements the RawParser interface.
+// This parser provides basic parsing functionaity for the Nikon Electronic Format
+// (NEF).  For a specified NEF, the EXIF create time and orientation are parsed and the
+// embedded JPEG is extracted.  The following are resources on NEF file details:
+//
+// NEF-specific information: http://lclevy.free.fr/nef/
+// TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 type NefParser struct {
 	HostIsLittleEndian bool
 }
@@ -72,7 +74,7 @@ func (n NefParser) ProcessFile(info *RawFileInfo) (nef *RawFile, err error) {
 		if err != nil {
 			return nef, err
 		} else if jpegInfo.length <= 0 {
-			return nef, fmt.Errorf("Invalid jpeg length: %d\n", jpegInfo.length)
+			return nef, fmt.Errorf("invalid jpeg length: %d\n", jpegInfo.length)
 		}
 		jpegPath, err := n.decodeAndWriteJpeg(f, jpegInfo, info.DestDir, info.Quality)
 		if err == nil {
@@ -96,7 +98,7 @@ func (n *NefParser) SetHostIsLittleEndian(hostIsLe bool) {
 	n.HostIsLittleEndian = hostIsLe
 }
 
-// IsLittleEndian is a function to get the host's
+// IsHostLittleEndian is a function to get the host's
 // endianness specified for the given instance of the NefParser.
 // Returns true if the host is a little endian machine.
 func (n NefParser) IsHostLittleEndian() bool {
@@ -164,27 +166,27 @@ func (n NefParser) processIfds(f *os.File, h *nefHeader) (j *jpegInfo, cDate tim
 				// JPEG offset (SUBID 0)
 				bytes, err := readField(int64(entry.valueOffset), 4, f)
 				if err == nil {
-					subId0Offset := int64(bytesToUInt(n.IsHostLittleEndian(), h.isBigEndian, bytes))
+					subID0Offset := int64(bytesToUInt(n.IsHostLittleEndian(), h.isBigEndian, bytes))
 
 					// Read SUBIFD 0 for JPEG
-					subIfd0Entries, err := processIfd(n.IsHostLittleEndian(), h.isBigEndian, subId0Offset, f)
+					subIfd0Entries, err := processIfd(n.IsHostLittleEndian(), h.isBigEndian, subID0Offset, f)
 					if err == nil {
 						for se := subIfd0Entries.Front(); se != nil; se = se.Next() {
-							subId0Entry := se.Value.(ifdEntry)
+							subID0Entry := se.Value.(ifdEntry)
 
-							if subId0Entry.tag == 0x011a {
-								jpeg.xRes, _, jpeg.xResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subId0Entry.valueOffset, f)
+							if subID0Entry.tag == 0x011a {
+								jpeg.xRes, _, jpeg.xResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subID0Entry.valueOffset, f)
 							}
 
-							if subId0Entry.tag == 0x011b {
-								jpeg.yRes, _, jpeg.yResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subId0Entry.valueOffset, f)
+							if subID0Entry.tag == 0x011b {
+								jpeg.yRes, _, jpeg.yResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subID0Entry.valueOffset, f)
 							}
 
-							if subId0Entry.tag == 0x0201 {
-								jpeg.offset = int64(subId0Entry.valueOffset)
+							if subID0Entry.tag == 0x0201 {
+								jpeg.offset = int64(subID0Entry.valueOffset)
 							}
-							if subId0Entry.tag == 0x0202 {
-								jpeg.length = int64(subId0Entry.valueOffset)
+							if subID0Entry.tag == 0x0202 {
+								jpeg.length = int64(subID0Entry.valueOffset)
 							}
 						}
 					} else {
@@ -210,7 +212,7 @@ func (n NefParser) processIfds(f *os.File, h *nefHeader) (j *jpegInfo, cDate tim
 					for exif := exifEntries.Front(); exif != nil; exif = exif.Next() {
 						exifEntry := exif.Value.(ifdEntry)
 						if exifEntry.tag == 0x9004 {
-							createDate, err := processAsciiEntry(&exifEntry, f)
+							createDate, err := processASCIIEntry(&exifEntry, f)
 							if err == nil {
 								cDate, err = parseDateTime(createDate)
 							}

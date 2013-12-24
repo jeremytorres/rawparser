@@ -21,13 +21,6 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// Package rawparser provides basic parsing functionaity for the Canon Raw Format 2
-// (CR2).  For a specified CR2, the EXIF create time and orientation are parsed and the
-// embedded JPEG is exracted.  The following are resources on CR2 file details:
-//
-// CR2-specific information: http://lclevy.free.fr/cr2
-// TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
-
 package rawparser
 
 import (
@@ -37,6 +30,8 @@ import (
 	"time"
 )
 
+// Cr2ParserKey is a unique identifier for the CR2 raw file parser.
+// This key may be used as a key the RawParsers map.
 const Cr2ParserKey = "CR2"
 
 // cr2Header is a struct representing a CR2 file header.
@@ -56,6 +51,12 @@ type cr2Header struct {
 
 // Cr2Parser is the struct defining the state of
 // the RawFile concept.  Implements the RawParser interface.
+// This parser provides basic parsing functionaity for the Canon Raw Format 2
+// (CR2).  For a specified CR2, the EXIF create time and orientation are parsed and the
+// embedded JPEG is extracted.  The following are resources on CR2 file details:
+//
+// CR2-specific information: http://lclevy.free.fr/cr2
+// TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 type Cr2Parser struct {
 	HostIsLittleEndian bool
 }
@@ -97,7 +98,7 @@ func (n *Cr2Parser) SetHostIsLittleEndian(hostIsLe bool) {
 	n.HostIsLittleEndian = hostIsLe
 }
 
-// IsLittleEndian is a function to get the host's
+// IsHostLittleEndian is a function to get the host's
 // endianness specified for the given instance of the Cr2Parser.
 // Returns true if the host is a little endian machine.
 func (n Cr2Parser) IsHostLittleEndian() bool {
@@ -147,7 +148,7 @@ func (n Cr2Parser) processHeader(f *os.File) (*cr2Header, error) {
 	}
 	// don't convert for endianess for Cr2 magic value
 	// Magic Value is 0x4352 "CR"
-	h.cr2MagicValue = bytesToAsciiString(bytes)
+	h.cr2MagicValue = bytesToASCIIString(bytes)
 	//	log.Printf("CR2 Magic Val ASCII converted: %s\n", h.cr2MagicValue)
 
 	// cr2 major num
@@ -216,7 +217,7 @@ func (n Cr2Parser) processIfds(f *os.File, h *cr2Header) (j *jpegInfo, cDate tim
 			for exif := exifEntries.Front(); exif != nil; exif = exif.Next() {
 				exifEntry := exif.Value.(ifdEntry)
 				if exifEntry.tag == 0x9004 {
-					createDate, err := processAsciiEntry(&exifEntry, f)
+					createDate, err := processASCIIEntry(&exifEntry, f)
 					if err == nil {
 						cDate, err = parseDateTime(createDate)
 					}

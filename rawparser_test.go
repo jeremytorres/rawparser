@@ -147,7 +147,7 @@ func TestBytesToUInt(t *testing.T) {
 
 func TestBytesToAsciiString(t *testing.T) {
 	bytes := []byte{0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x21}
-	result := bytesToAsciiString(bytes)
+	result := bytesToASCIIString(bytes)
 	if result != "Hello!" {
 		t.Fail()
 	}

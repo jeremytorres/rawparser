@@ -21,6 +21,10 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// Package rawparser provides a basic parsing interface for camera raw files.  The current
+// incarnation supports TIFF-based RAW files (e.g., Canon CR2, Nikon NEF...).
+//
+// TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 package rawparser
 
 import (
@@ -66,7 +70,7 @@ type RawFile struct {
 	JpegOrientation    float64
 }
 
-// The defining interface of a raw file parser.  Camera-specific parsers
+// RawParser is the defining interface of a raw file parser.  Camera-specific parsers
 // shall implement this interface.
 type RawParser interface {
 	// ProcessFile processes a raw file per the implementation of this parser.
@@ -105,11 +109,12 @@ func (p *RawParsers) Register(key string, parser RawParser) {
 	p.parserMap[key] = parser
 }
 
-// Returns a RawParser for a given raw file type or nil if not found.
+// GetParser returns a RawParser for a given raw file type or nil if not found.
 func (p RawParsers) GetParser(key string) RawParser {
 	return p.parserMap[key]
 }
 
+// DeleteParser removes the specified RawParser.
 func (p *RawParsers) DeleteParser(key string) {
 	delete(p.parserMap, key)
 }
@@ -121,7 +126,7 @@ func parseDateTime(s string) (t time.Time, err error) {
 
 	split := strings.Split(s, " ")
 	if len(split) != 2 {
-		return t, fmt.Errorf("DateTime string invalid: '%s'", s)
+		return t, fmt.Errorf("dateTime string invalid: '%s'", s)
 	}
 
 	dateToken := split[0]
@@ -140,7 +145,7 @@ func parseDateTime(s string) (t time.Time, err error) {
 			return t, err
 		}
 	} else {
-		err = fmt.Errorf("Invalid date and/or time string format: %s %s\n", dateToken, timeToken)
+		err = fmt.Errorf("invalid date and/or time string format: %s %s\n", dateToken, timeToken)
 	}
 
 	return t, err
@@ -151,7 +156,7 @@ func parseDateTime(s string) (t time.Time, err error) {
 // Returns 3-digit date string or error.
 func toRfc822Date(dateTokens []string) (string, error) {
 	var monthStr string
-	var e error = nil
+	var e error
 
 	token := dateTokens[1]
 
@@ -182,7 +187,7 @@ func toRfc822Date(dateTokens []string) (string, error) {
 	case "12":
 		monthStr = "Dec"
 	default:
-		e = fmt.Errorf("Invalid month: '%s'\n", token)
+		e = fmt.Errorf("invalid month: '%s'\n", token)
 	}
 
 	return monthStr, e

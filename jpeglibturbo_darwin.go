@@ -51,7 +51,7 @@ func decodeAndWriteJpeg(data []byte, quality int, filename string) error {
 		C.int(len(data)), C.int(quality), f)
 
 	if rc != 0 {
-		return fmt.Errorf("Error re-encoding JPEG")
+		return fmt.Errorf("error re-encoding JPEG")
 	}
 	return nil
 }

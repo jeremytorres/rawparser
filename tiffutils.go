@@ -78,7 +78,7 @@ func bytesToUInt(isHostLittleEndian, isBigEndian bool, buf []byte) uint32 {
 
 // bytesToAsciiString is a utility function for converting bytes
 // to an ASCII string.  Returns a new string given the ASCII bytes.
-func bytesToAsciiString(bytes []byte) (val string) {
+func bytesToASCIIString(bytes []byte) (val string) {
 	val = string(bytes[:])
 	return val
 }
@@ -90,7 +90,7 @@ func readField(offset int64, bytesToRead uint32, f *os.File) (bytes []byte, err 
 
 	bytesRead, err := f.ReadAt(cache, int64(offset))
 	if bytesRead != int(bytesToRead) {
-		err = fmt.Errorf("Read %d bytes; expected %d\n", bytesRead, bytesToRead)
+		err = fmt.Errorf("read %d bytes; expected %d\n", bytesRead, bytesToRead)
 	}
 
 	return cache, err
@@ -176,9 +176,9 @@ func processRationalEntry(isHostLe, isFileBe bool, offset uint32, f *os.File) (n
 // processAsciiEntry converts a TIFF-based ASCII entry into a string
 // per a given offset and raw file header.
 // Return a string based on the ASCII bytes.
-func processAsciiEntry(entry *ifdEntry, f *os.File) (val string, err error) {
+func processASCIIEntry(entry *ifdEntry, f *os.File) (val string, err error) {
 	bytes, err := readField(int64(entry.valueOffset), entry.count, f)
-	val = bytesToAsciiString(bytes)
+	val = bytesToASCIIString(bytes)
 
 	return val, err
 }
