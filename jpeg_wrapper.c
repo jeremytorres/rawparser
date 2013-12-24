@@ -1,3 +1,5 @@
+// +build jpeg turbojpeg
+
 /*
  Copyright (c) 2013 Jeremy Torres, https://github.com/jeremytorres/rawparser
 

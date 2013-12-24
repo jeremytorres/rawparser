@@ -24,11 +24,7 @@
 package rawparser
 
 import (
-	"bytes"
 	"fmt"
-	"image"
-	"image/jpeg"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -190,39 +186,6 @@ func toRfc822Date(dateTokens []string) (string, error) {
 	}
 
 	return monthStr, e
-}
-
-// decodeJpeg extracts the embedded jpeg bytes within a raw file and
-// decodes the JPEG data.
-// Returns the JPEG bytes or error.
-func decodeJpeg(f *os.File, j *jpegInfo) (img image.Image, e error) {
-	cache := make([]byte, j.length)
-	_, e = f.ReadAt(cache, j.offset)
-
-	if e != nil {
-		log.Printf("Error reading jpeg file: %v\n", e)
-		return nil, e
-	}
-
-	// Decode JPEG using JPEG quality specified.
-	bReader := bytes.NewReader(cache)
-	img, e = jpeg.Decode(bReader)
-	if e != nil {
-		log.Printf("Error decoding embedded jpeg: %v\n", e)
-		return nil, e
-	}
-
-	return img, e
-}
-
-// encodeAndWriteJpeg encodes a JPEG image based on a JPEG quality parameter
-// from 1 to 100, where 100 is the best encoding quality.
-func encodeAndWriteJpeg(f *os.File, img image.Image, q int) error {
-	e := jpeg.Encode(f, img, &jpeg.Options{q})
-	if e != nil {
-		log.Printf("Error encoding and writing embedded jpeg: %v\n", e)
-	}
-	return e
 }
 
 // genExtractedJpegName creates a full path name for an extracted JPEG

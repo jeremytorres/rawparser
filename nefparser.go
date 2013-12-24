@@ -274,5 +274,5 @@ func (n NefParser) decodeAndWriteJpeg(f *os.File, j *jpegInfo, destDir string, q
 // NewNefParser creates an instance of NEF-specific RawParser.
 // Returns an instance of a NEF-specific RawParser.
 func NewNefParser(hostIsLittleEndian bool) (RawParser, string) {
-	return RawParser(&NefParser{hostIsLittleEndian}), NefParserKey
+	return &NefParser{hostIsLittleEndian}, NefParserKey
 }

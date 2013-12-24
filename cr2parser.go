@@ -283,5 +283,5 @@ func (n Cr2Parser) decodeAndWriteJpeg(f *os.File, j *jpegInfo, destDir string, q
 // NewCr2Parser creates an instance of Cr2Parser.
 // Returns a pointer to a Cr2Parser instance.
 func NewCr2Parser(hostIsLittleEndian bool) (RawParser, string) {
-	return RawParser(&Cr2Parser{hostIsLittleEndian}), Cr2ParserKey
+	return &Cr2Parser{hostIsLittleEndian}, Cr2ParserKey
 }

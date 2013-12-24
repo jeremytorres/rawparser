@@ -1,3 +1,5 @@
+// +build jpeg
+
 /*
  Copyright (c) 2013 Jeremy Torres, https://github.com/jeremytorres/rawparser
 
@@ -23,10 +25,7 @@
 
 package rawparser
 
-// Note: modify these flags for your enviornment if you
-// want to use TurboJpeg.
-// #cgo CFLAGS: -I/usr/local/opt/jpeg-turbo/include -O2
-// #cgo LDFLAGS: -L/usr/local/opt/jpeg-turbo/lib -lturbojpeg
+// Note: modify these flags for your enviornment if required.
 
 // #cgo CFLAGS: -O2
 // #cgo LDFLAGS: -ljpeg
@@ -35,8 +34,13 @@ import "C"
 
 import (
 	"fmt"
+	"log"
 	"unsafe"
 )
+
+func init() {
+	log.Println("Using libjpeg native library")
+}
 
 func decodeAndWriteJpeg(data []byte, quality int, filename string) error {
 	var rc C.int
