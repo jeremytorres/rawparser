@@ -6,5 +6,6 @@ env:
 before_install:
  - sudo apt-get update -qq
  - sudo apt-get install -qq libturbojpeg libjpeg-turbo8-dev
+ - ls -alt /opt/libjpeg-turbo; ls -alt /opt/libjpeg-turbo/lib; ls -alt /opt/libjpeg-turbo/include
 script: go test -v && go test -v -tags jpeg & go test -v -tags turbojpeg
 
