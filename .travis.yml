@@ -8,6 +8,6 @@ before_install:
  - sudo apt-get install -qq libturbojpeg libjpeg-turbo8-dev
  - sudo dpkg-query -L libjpeg-turbo8-dev
  - sudo dpkg-query -L libturbojpeg
- - ls -alt /opt/libjpeg-turbo; ls -alt /opt/libjpeg-turbo/lib; ls -alt /opt/libjpeg-turbo/include
+ - ls -alt /usr/include; ls -alt /usr/lib
 script: go test -v && go test -v -tags jpeg & go test -v -tags turbojpeg
 
