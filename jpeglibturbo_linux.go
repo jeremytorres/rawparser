@@ -28,7 +28,7 @@ package rawparser
 // Note: modify these flags for your enviornment if required.
 
 // #cgo CFLAGS: -O2
-// #cgo LDFLAGS: -L/usr/lib/x86_64-linux-gnu libturbojpeg.a
+// #cgo LDFLAGS: -L/usr/lib/x86_64-linux-gnu -static -lturbojpeg
 // #include "jpeg_wrapper.h"
 import "C"
 
