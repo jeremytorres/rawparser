@@ -1,4 +1,4 @@
-// +build turbojpeg
+// +build turbojpeg,amd64
 
 /*
  Copyright (c) 2013 Jeremy Torres, https://github.com/jeremytorres/rawparser
@@ -27,8 +27,8 @@ package rawparser
 
 // Note: modify these flags for your enviornment if required.
 
-// #cgo CFLAGS: -I/usr/include -O2
-// #cgo LDFLAGS: -lturbojpeg
+// #cgo CFLAGS: -O2
+// #cgo LDFLAGS: -L/usr/lib/x86_64-linux-gnu -lturbojpeg
 // #include "jpeg_wrapper.h"
 import "C"
 
@@ -39,7 +39,7 @@ import (
 )
 
 func init() {
-	log.Println("Using turbojpeg native library")
+	log.Println("Using turbojpeg native library.  Linux: AMD64.")
 }
 
 func decodeAndWriteJpeg(data []byte, quality int, filename string) error {
