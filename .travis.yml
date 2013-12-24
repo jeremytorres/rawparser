@@ -4,7 +4,6 @@ go:
 env:
   - GOARCH=amd64
 before_install:
- - sudo apt-get install -qq libjpeg-turbo
- 
+ - sudo apt-get install -qq libturbojpeg
 script: go test -v && go test -v -tags jpeg & go test -v -tags turbojpeg
 
