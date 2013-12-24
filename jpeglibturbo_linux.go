@@ -1,4 +1,4 @@
-// +build turbojpeg,amd64
+// +build turbojpeg
 
 /*
  Copyright (c) 2013 Jeremy Torres, https://github.com/jeremytorres/rawparser
@@ -26,9 +26,13 @@
 package rawparser
 
 // Note: modify these flags for your enviornment if required.
+// The Ubuntu Linux servers on Travis CI use apt-get and the
+// the .travis.yml is configured to retrieve the turbo jpeg
+// package which overwrites the symlink for libjpeg, as turbo
+// jpeg is interface compatible.
 
 // #cgo CFLAGS: -O2
-// #cgo LDFLAGS: -Wl,-Map=/tmp/jpeglibturbo.map,--cref -ljpeg
+// #cgo LDFLAGS: -ljpeg
 // #include "jpeg_wrapper.h"
 import "C"
 
