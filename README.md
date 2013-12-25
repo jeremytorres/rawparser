@@ -26,8 +26,18 @@ My [jpegextract](https://github.com/jeremytorres/jpegextract) utility utilizes t
 ```bash
 cd $GOPATH/src/github.com/jeremytorres/rawparser
 ```
+
+Test with GO's image/jpeg library:
+
 `go test`
 
+Test with libjpeg library:
+
+`go test -tags jpeg`
+
+Test with turbojpeg library:
+
+`go test -tags turbojpeg`
 
 ### Current Development Status
 - I consider the current status a beta version as there is a laundry list of this I will like to support:
