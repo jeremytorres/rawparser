@@ -54,7 +54,8 @@ type nefHeader struct {
 // NEF-specific information: http://lclevy.free.fr/nef/
 // TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 type NefParser struct {
-	HostIsLittleEndian bool
+	//	HostIsLittleEndian bool
+	*rawParser
 }
 
 // ProcessFile is the entry point into the NefParser.  For a specified NEF,
@@ -89,20 +90,6 @@ func (n NefParser) ProcessFile(info *RawFileInfo) (nef *RawFile, err error) {
 	}
 
 	return nef, err
-}
-
-// SetHostIsLittleEndian is a function to set the host's
-// endianness for the given instance of the NefParser.
-// Set to true if host is a little endian machine; false otherwise.
-func (n *NefParser) SetHostIsLittleEndian(hostIsLe bool) {
-	n.HostIsLittleEndian = hostIsLe
-}
-
-// IsHostLittleEndian is a function to get the host's
-// endianness specified for the given instance of the NefParser.
-// Returns true if the host is a little endian machine.
-func (n NefParser) IsHostLittleEndian() bool {
-	return n.HostIsLittleEndian
 }
 
 // processHeader reads NEF header that defines:
@@ -236,30 +223,6 @@ func (n NefParser) decodeAndWriteJpeg(f *os.File, j *jpegInfo, destDir string, q
 	jpegFileName = genExtractedJpegName(f, destDir, "_extracted.jpg")
 	log.Printf("Creating JPEG file: %s\n", jpegFileName)
 
-	/* Uncomment this block if you want to use GO's image/jpeg facility
-	jpegFile, err := os.Create(jpegFileName)
-
-	defer jpegFile.Close()
-
-	if err != nil {
-		log.Printf("Error creating jpeg file: %v\n", err)
-		return jpegFileName, err
-	}
-
-	// Decode image
-	decodedImage, err := decodeJpeg(f, j)
-	if err != nil {
-		log.Printf("Error decoding embedded jpeg: %v\n", err)
-		return jpegFileName, err
-	}
-
-	// Encode and write using specifid JPEG quality
-	err = encodeAndWriteJpeg(jpegFile, decodedImage, quality)
-	if err != nil {
-		log.Printf("Error encoding embedded jpeg: %v\n", err)
-	}
-	*/
-
 	data := make([]byte, j.length)
 	_, err = f.ReadAt(data, j.offset)
 
@@ -276,5 +239,5 @@ func (n NefParser) decodeAndWriteJpeg(f *os.File, j *jpegInfo, destDir string, q
 // NewNefParser creates an instance of NEF-specific RawParser.
 // Returns an instance of a NEF-specific RawParser.
 func NewNefParser(hostIsLittleEndian bool) (RawParser, string) {
-	return &NefParser{hostIsLittleEndian}, NefParserKey
+	return &NefParser{&rawParser{hostIsLittleEndian}}, NefParserKey
 }

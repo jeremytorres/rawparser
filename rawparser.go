@@ -88,6 +88,27 @@ type RawParser interface {
 	IsHostLittleEndian() bool
 }
 
+// rawParser is a base implementation of the RawParser interface.
+// It's purpose is to provide common functionality to implentations
+// of the interface.
+type rawParser struct {
+	HostIsLittleEndian bool
+}
+
+// SetHostIsLittleEndian is a function to set the host's
+// endianness for the given instance of the RawParser.
+// Set to true if host is a little endian machine; false otherwise.
+func (r *rawParser) SetHostIsLittleEndian(hostIsLe bool) {
+	r.HostIsLittleEndian = hostIsLe
+}
+
+// IsHostLittleEndian is a function to get the host's
+// endianness specified for the given instance of the RawParser.
+// Returns true if the host is a little endian machine.
+func (r rawParser) IsHostLittleEndian() bool {
+	return r.HostIsLittleEndian
+}
+
 // RawParsers is a structure containing a mapping
 // of registered raw file parsers.  The key is the
 // lower-case file extension of the raw file type;

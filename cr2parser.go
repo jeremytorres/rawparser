@@ -58,7 +58,8 @@ type cr2Header struct {
 // CR2-specific information: http://lclevy.free.fr/cr2
 // TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 type Cr2Parser struct {
-	HostIsLittleEndian bool
+	//HostIsLittleEndian bool
+	*rawParser
 }
 
 // ProcessFile is the entry point into the Cr2Parser.  For a specified CR2,
@@ -91,20 +92,6 @@ func (n Cr2Parser) ProcessFile(info *RawFileInfo) (CR2 *RawFile, err error) {
 	return CR2, err
 }
 
-// SetHostIsLittleEndian is a function to set the host's
-// endianness for the given instance of the Cr2Parser.
-// Set to true if host is a little endian machine; false otherwise.
-func (n *Cr2Parser) SetHostIsLittleEndian(hostIsLe bool) {
-	n.HostIsLittleEndian = hostIsLe
-}
-
-// IsHostLittleEndian is a function to get the host's
-// endianness specified for the given instance of the Cr2Parser.
-// Returns true if the host is a little endian machine.
-func (n Cr2Parser) IsHostLittleEndian() bool {
-	return n.HostIsLittleEndian
-}
-
 // processHeader reads CR2 header that defines:
 //   byte order;
 //   TIFF magic value
@@ -119,7 +106,7 @@ func (n Cr2Parser) processHeader(f *os.File) (*cr2Header, error) {
 		return &h, err
 	}
 	// byte order bytes
-	byteOrder := bytesToUShort(n.IsHostLittleEndian(), false, bytes)
+	byteOrder := bytesToUShort(n.HostIsLittleEndian, false, bytes)
 
 	// set byte order from header read
 	h.isBigEndian = (byteOrder == 0x4D4D)
@@ -129,7 +116,7 @@ func (n Cr2Parser) processHeader(f *os.File) (*cr2Header, error) {
 	if err != nil {
 		return &h, err
 	}
-	h.tiffMagicValue = bytesToUShort(n.IsHostLittleEndian(), h.isBigEndian, bytes)
+	h.tiffMagicValue = bytesToUShort(n.HostIsLittleEndian, h.isBigEndian, bytes)
 	//	log.Printf("TIFF Magic Val converted: 0x%x\n", h.tiffMagicValue)
 
 	// TIFF offset
@@ -137,7 +124,7 @@ func (n Cr2Parser) processHeader(f *os.File) (*cr2Header, error) {
 	if err != nil {
 		return &h, err
 	}
-	val := bytesToUInt(n.IsHostLittleEndian(), h.isBigEndian, bytes)
+	val := bytesToUInt(n.HostIsLittleEndian, h.isBigEndian, bytes)
 	h.tiffOffset = int64(val)
 	//	log.Printf("TIFF Offset Val converted: 0x%x\n", h.tiffOffset)
 
@@ -179,7 +166,7 @@ func (n Cr2Parser) processIfds(f *os.File, h *cr2Header) (j *jpegInfo, cDate tim
 	var jpeg jpegInfo
 	offset := h.tiffOffset
 
-	entries, err := processIfd(n.IsHostLittleEndian(), h.isBigEndian, offset, f)
+	entries, err := processIfd(n.HostIsLittleEndian, h.isBigEndian, offset, f)
 	if err != nil {
 		return &jpeg, cDate, err
 	}
@@ -202,14 +189,14 @@ func (n Cr2Parser) processIfds(f *os.File, h *cr2Header) (j *jpegInfo, cDate tim
 		case entry.tag == 0x0117:
 			jpeg.length = int64(entry.valueOffset)
 		case entry.tag == 0x011a:
-			jpeg.xRes, _, jpeg.xResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, entry.valueOffset, f)
+			jpeg.xRes, _, jpeg.xResFloat, err = processRationalEntry(n.HostIsLittleEndian, h.isBigEndian, entry.valueOffset, f)
 		case entry.tag == 0x011b:
-			jpeg.yRes, _, jpeg.yResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, entry.valueOffset, f)
+			jpeg.yRes, _, jpeg.yResFloat, err = processRationalEntry(n.HostIsLittleEndian, h.isBigEndian, entry.valueOffset, f)
 		case entry.tag == 0x8769: // EXIF IFD pointer
 			// EXIF IFD pointer.  Note: the pointer is the value represented
 			// in valueOffset.
 			// Read EXIF Entries
-			exifEntries, err := processIfd(n.IsHostLittleEndian(), h.isBigEndian, int64(entry.valueOffset), f)
+			exifEntries, err := processIfd(n.HostIsLittleEndian, h.isBigEndian, int64(entry.valueOffset), f)
 			if err != nil {
 				return &jpeg, cDate, err
 			}
@@ -246,28 +233,6 @@ func (n Cr2Parser) decodeAndWriteJpeg(f *os.File, j *jpegInfo, destDir string, q
 	jpegFileName = genExtractedJpegName(f, destDir, "_extracted.jpg")
 	log.Printf("Creating JPEG file: %s\n", jpegFileName)
 
-	/* Uncomment this block if you want to use GO's image/jpeg facility
-	jpegFile, err := os.Create(jpegFileName)
-	defer jpegFile.Close()
-	if err != nil {
-		log.Printf("Error creating jpeg file: %v\n", err)
-		return jpegFileName, err
-	}
-
-	// Decode image
-	decodedImage, err := decodeJpeg(f, j)
-	if err != nil {
-		log.Printf("Error decoding embedded jpeg: %v\n", err)
-		return jpegFileName, err
-	}
-
-	// Encode and write using specifid JPEG quality
-	err = encodeAndWriteJpeg(jpegFile, decodedImage, quality)
-	if err != nil {
-		log.Printf("Error encoding embedded jpeg: %v\n", err)
-	}
-	*/
-
 	data := make([]byte, j.length)
 	_, err = f.ReadAt(data, j.offset)
 
@@ -284,5 +249,5 @@ func (n Cr2Parser) decodeAndWriteJpeg(f *os.File, j *jpegInfo, destDir string, q
 // NewCr2Parser creates an instance of Cr2Parser.
 // Returns a pointer to a Cr2Parser instance.
 func NewCr2Parser(hostIsLittleEndian bool) (RawParser, string) {
-	return &Cr2Parser{hostIsLittleEndian}, Cr2ParserKey
+	return &Cr2Parser{&rawParser{hostIsLittleEndian}}, Cr2ParserKey
 }

@@ -38,8 +38,7 @@ var (
 
 func setupCr2() {
 	gHostIsLe = isHostLittleEndian()
-	gCr2Parser = new(Cr2Parser)
-	gCr2Parser.HostIsLittleEndian = gHostIsLe
+	gCr2Parser = &Cr2Parser{&rawParser{gHostIsLe}}
 }
 
 func openTestCr2File() (*os.File, error) {

@@ -40,8 +40,7 @@ var (
 
 func setupNef() {
 	gHostIsLe = isHostLittleEndian()
-	gNefParser = new(NefParser)
-	gNefParser.HostIsLittleEndian = gHostIsLe
+	gNefParser = &NefParser{&rawParser{gHostIsLe}}
 }
 
 func openTestNefFile() (*os.File, error) {
