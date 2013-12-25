@@ -172,7 +172,7 @@ func TestNefProcessFile(t *testing.T) {
 	testdir, e := getNefTestDir()
 	if e == nil {
 		// big endian nef
-		ni := RawFileInfo{TestNefFile, testdir, 50, 1}
+		ni := RawFileInfo{TestNefFile, testdir, 50}
 		nef, err := gNefParser.ProcessFile(&ni)
 		defer os.Remove(nef.JpegPath)
 		if err != nil {
@@ -196,7 +196,7 @@ func TestNefProcessFileNoJpeg(t *testing.T) {
 
 	testdir, e := getNefTestDir()
 	if e == nil {
-		ni := RawFileInfo{TestNefNoJpegFile, testdir, 50, 1}
+		ni := RawFileInfo{TestNefNoJpegFile, testdir, 50}
 		_, err := gNefParser.ProcessFile(&ni)
 		if err == nil {
 			t.Fail()
@@ -213,7 +213,7 @@ func TestNefProcessNonExistentFile(t *testing.T) {
 	if e != nil {
 		t.Fatal("Unable to determine test directory")
 	} else {
-		ni := RawFileInfo{"", testdir, 50, 1}
+		ni := RawFileInfo{"", testdir, 50}
 		_, err := gNefParser.ProcessFile(&ni)
 		if err == nil {
 			t.Fatal("Expected error not generated while parsing NEF")

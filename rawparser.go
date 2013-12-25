@@ -56,10 +56,10 @@ type jpegInfo struct {
 
 // RawFileInfo is a struct defining key information for parsing a RawFile.
 type RawFileInfo struct {
-	File          string
-	DestDir       string
-	Quality       int
-	NumOfChannels int
+	File    string
+	DestDir string
+	Quality int
+	//	NumOfChannels int
 }
 
 // RawFile is a struct representing parsed results for a specific raw file.

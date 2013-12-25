@@ -170,7 +170,7 @@ func TestCr2ProcessFile(t *testing.T) {
 	// little endian CR2
 	testdir, e := getCr2TestDir()
 	if e == nil {
-		ni := RawFileInfo{TestCR2File, testdir, 50, 1}
+		ni := RawFileInfo{TestCR2File, testdir, 50}
 		cr2, err := gCr2Parser.ProcessFile(&ni)
 		defer os.Remove(cr2.JpegPath)
 		if err != nil {
@@ -200,7 +200,7 @@ func TestCr2ProcessNonExistentFile(t *testing.T) {
 	if e != nil {
 		t.Fatal("Unable to determine test directory")
 	} else {
-		ni := RawFileInfo{"", testdir, 50, 1}
+		ni := RawFileInfo{"", testdir, 50}
 		_, err := gCr2Parser.ProcessFile(&ni)
 		if err == nil {
 			t.Fatal("Expected error not generated while parsing test little endian CR2")
