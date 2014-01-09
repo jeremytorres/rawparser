@@ -11,8 +11,9 @@ My [jpegextract](https://github.com/jeremytorres/jpegextract) utility utilizes t
 
 ## Dependencies
 * GO 1.2 (_maybe_ older GO 1.1.2? but not tested)
-* [libjpeg](http://www.ijg.org)
 * Optional (highly-recommended):
+    * [C++ JPEG Compressor/Decompressor](https://code.google.com/p/jpeg-compressor/).  The source is included in this project.  Only a c/c++ compiler is needed, no other libraries.
+    * [libjpeg](http://www.ijg.org)
     * [TurboJpeg](http://www.libjpeg-turbo.org/)
     * If you have many JPEGs to extract, TurboJpeg provides noticebly better performance.
  
@@ -38,6 +39,10 @@ Test with libjpeg library:
 Test with turbojpeg library:
 
 `go test -tags turbojpeg`
+
+Test with standalone c++ library:
+
+`go test -tags jpegcpp`
 
 ### Current Development Status
 - I consider the current status a beta version as there is a laundry list of this I will like to support:

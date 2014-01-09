@@ -1,3 +1,5 @@
+// +build jpegcpp
+
 /*
  Copyright (c) 2013 Jeremy Torres, https://github.com/jeremytorres/rawparser
 
@@ -21,20 +23,35 @@
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef JPEG_WRAPPER_H
-#define JPEG_WRAPPER_H
+package rawparser
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Note: modify these flags for your enviornment if required.
 
-int
-decodeEncodeWrite(unsigned char *ci, int ciLen, int quality, char *filename);
+// #cgo CXXFLAGS: -O3
+// #include "jpeg_wrapper.h"
+import "C"
 
-void cleanupString(char *c);
+import (
+	"fmt"
+	"log"
+	"unsafe"
+)
 
-#ifdef __cplusplus
+func init() {
+	log.Println("Using standalone C++ native library")
 }
-#endif
 
-#endif
+func decodeAndWriteJpeg(data []byte, quality int, filename string) error {
+	var rc C.int
+	f := C.CString(filename)
+	defer C.cleanupString(f)
+
+	rc = C.decodeEncodeWrite((*C.uchar)(unsafe.Pointer(&data[0])),
+		C.int(len(data)), C.int(quality), f)
+
+	if rc != 0 {
+		return fmt.Errorf("error re-encoding JPEG")
+	}
+
+	return nil
+}

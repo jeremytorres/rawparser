@@ -1,4 +1,4 @@
-// +build !jpeg,!turbojpeg
+// +build !jpeg,!turbojpeg,!jpegcpp
 
 /*
  Copyright (c) 2013 Jeremy Torres, https://github.com/jeremytorres/rawparser
