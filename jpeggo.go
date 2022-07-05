@@ -1,3 +1,4 @@
+//go:build !jpeg && !turbojpeg && !jpegcpp
 // +build !jpeg,!turbojpeg,!jpegcpp
 
 /*
@@ -39,11 +40,11 @@ func init() {
 
 func decodeAndWriteJpeg(data []byte, quality int, filename string) error {
 	jpegFile, err := os.Create(filename)
-	defer jpegFile.Close()
 	if err != nil {
 		log.Printf("Error creating jpeg file: %v\n", err)
 		return err
 	}
+	defer jpegFile.Close()
 
 	// Decode image
 	decodedImage, err := decodeJpeg(data)
@@ -74,7 +75,7 @@ func decodeJpeg(data []byte) (img image.Image, e error) {
 // encodeAndWriteJpeg encodes a JPEG image based on a JPEG quality parameter
 // from 1 to 100, where 100 is the best encoding quality.
 func encodeAndWriteJpeg(f *os.File, img image.Image, q int) error {
-	e := jpeg.Encode(f, img, &jpeg.Options{q})
+	e := jpeg.Encode(f, img, &jpeg.Options{Quality: q})
 	if e != nil {
 		log.Printf("Error encoding and writing embedded jpeg: %v\n", e)
 	}

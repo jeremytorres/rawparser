@@ -78,8 +78,8 @@ func TestCr2ProcessHeader(t *testing.T) {
 
 	// little endian test CR2
 	f, e := openTestCr2File()
-	defer f.Close()
 	if e == nil {
+		defer f.Close()
 		h, err := getCr2Header(f)
 		if err != nil {
 			t.Fail()
@@ -101,8 +101,8 @@ func TestCr2ProcessIfds(t *testing.T) {
 
 	// little endian CR2
 	f, e := openTestCr2File()
-	defer f.Close()
 	if e == nil {
+		defer f.Close()
 		h, err := getCr2Header(f)
 		if err != nil {
 			t.Fail()
@@ -124,8 +124,8 @@ func TestProcessJpegDecodeAndWrite(t *testing.T) {
 
 	// little endian CR2
 	f, e := openTestCr2File()
-	defer f.Close()
 	if e == nil {
+		defer f.Close()
 		h, err := getCr2Header(f)
 		if err != nil {
 			t.Fail()

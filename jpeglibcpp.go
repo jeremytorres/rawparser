@@ -1,3 +1,4 @@
+//go:build jpegcpp
 // +build jpegcpp
 
 /*

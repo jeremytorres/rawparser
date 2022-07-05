@@ -74,7 +74,7 @@ func (n Cr2Parser) ProcessFile(info *RawFileInfo) (CR2 *RawFile, err error) {
 	if err != nil {
 		log.Printf("Error: Unable to open file: '%s'\n", info.File)
 	} else {
-		h, err := n.processHeader(f)
+		h, _ := n.processHeader(f)
 		jpegInfo, createDate, err := n.processIfds(f, h)
 		if err == nil {
 			jpegPath, err := n.decodeAndWriteJpeg(f, jpegInfo, info.DestDir, info.Quality)
@@ -206,7 +206,7 @@ func (n Cr2Parser) processIfds(f *os.File, h *cr2Header) (j *jpegInfo, cDate tim
 				if exifEntry.tag == 0x9004 {
 					createDate, err := processASCIIEntry(&exifEntry, f)
 					if err == nil {
-						cDate, err = parseDateTime(createDate)
+						cDate, _ = parseDateTime(createDate)
 					}
 				}
 			}

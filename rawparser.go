@@ -166,7 +166,7 @@ func parseDateTime(s string) (t time.Time, err error) {
 			return t, err
 		}
 	} else {
-		err = fmt.Errorf("invalid date and/or time string format: %s %s\n", dateToken, timeToken)
+		err = fmt.Errorf("invalid date and/or time string format: %s %s", dateToken, timeToken)
 	}
 
 	return t, err
@@ -181,7 +181,7 @@ func toRfc822Date(dateTokens []string) (string, error) {
 
 	token := dateTokens[1]
 
-	// numerical date to 3-digit alpa
+	// numerical date to 3-digit alpha
 	switch token {
 	case "01":
 		monthStr = "Jan"
@@ -208,7 +208,7 @@ func toRfc822Date(dateTokens []string) (string, error) {
 	case "12":
 		monthStr = "Dec"
 	default:
-		e = fmt.Errorf("invalid month: '%s'\n", token)
+		e = fmt.Errorf("invalid month: '%s'", token)
 	}
 
 	return monthStr, e

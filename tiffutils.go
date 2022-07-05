@@ -90,7 +90,7 @@ func readField(offset int64, bytesToRead uint32, f *os.File) (bytes []byte, err 
 
 	bytesRead, err := f.ReadAt(cache, int64(offset))
 	if bytesRead != int(bytesToRead) {
-		err = fmt.Errorf("read %d bytes; expected %d\n", bytesRead, bytesToRead)
+		err = fmt.Errorf("read %d bytes; expected %d", bytesRead, bytesToRead)
 	}
 
 	return cache, err
@@ -157,7 +157,7 @@ func processIfd(isHostLe, isFileBe bool, offset int64, f *os.File) (*list.List, 
 // Returns a numerator, denominator, and rational (fractional) value or error.
 func processRationalEntry(isHostLe, isFileBe bool, offset uint32, f *os.File) (num, den uint32, r float64, err error) {
 	// numerator
-	bytes, err := readField(int64(offset), 4, f)
+	bytes, _ := readField(int64(offset), 4, f)
 	num = bytesToUInt(isHostLe, isFileBe, bytes)
 
 	// denominator

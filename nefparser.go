@@ -70,12 +70,12 @@ func (n NefParser) ProcessFile(info *RawFileInfo) (nef *RawFile, err error) {
 	if err != nil {
 		log.Printf("Error: Unable to open file: '%s'\n", info.File)
 	} else {
-		h, err := n.processHeader(f)
+		h, _ := n.processHeader(f)
 		jpegInfo, createDate, err := n.processIfds(f, h)
 		if err != nil {
 			return nef, err
 		} else if jpegInfo.length <= 0 {
-			return nef, fmt.Errorf("invalid jpeg length: %d\n", jpegInfo.length)
+			return nef, fmt.Errorf("invalid jpeg length: %d", jpegInfo.length)
 		}
 		jpegPath, err := n.decodeAndWriteJpeg(f, jpegInfo, info.DestDir, info.Quality)
 		if err == nil {
@@ -162,11 +162,11 @@ func (n NefParser) processIfds(f *os.File, h *nefHeader) (j *jpegInfo, cDate tim
 							subID0Entry := se.Value.(ifdEntry)
 
 							if subID0Entry.tag == 0x011a {
-								jpeg.xRes, _, jpeg.xResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subID0Entry.valueOffset, f)
+								jpeg.xRes, _, jpeg.xResFloat, _ = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subID0Entry.valueOffset, f)
 							}
 
 							if subID0Entry.tag == 0x011b {
-								jpeg.yRes, _, jpeg.yResFloat, err = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subID0Entry.valueOffset, f)
+								jpeg.yRes, _, jpeg.yResFloat, _ = processRationalEntry(n.IsHostLittleEndian(), h.isBigEndian, subID0Entry.valueOffset, f)
 							}
 
 							if subID0Entry.tag == 0x0201 {
@@ -201,7 +201,7 @@ func (n NefParser) processIfds(f *os.File, h *nefHeader) (j *jpegInfo, cDate tim
 						if exifEntry.tag == 0x9004 {
 							createDate, err := processASCIIEntry(&exifEntry, f)
 							if err == nil {
-								cDate, err = parseDateTime(createDate)
+								cDate, _ = parseDateTime(createDate)
 							}
 						}
 					}

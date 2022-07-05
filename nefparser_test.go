@@ -79,8 +79,8 @@ func TestProcessNefHeader(t *testing.T) {
 	setupNef()
 
 	f, e := openTestNefFile()
-	defer f.Close()
 	if e == nil {
+		defer f.Close()
 		h, err := getNefHeader(f)
 		if err != nil {
 			t.Logf("Error: %v\n", err)
@@ -104,8 +104,8 @@ func TestProcessNefIfds(t *testing.T) {
 
 	// big endian nef
 	f, e := openTestNefFile()
-	defer f.Close()
 	if e == nil {
+		defer f.Close()
 		h, err := getNefHeader(f)
 		if err != nil {
 			t.Fail()
@@ -126,8 +126,8 @@ func TestProcessNefJpegDecodeAndWrite(t *testing.T) {
 	setupNef()
 
 	f, e := openTestNefFile()
-	defer f.Close()
 	if e == nil {
+		defer f.Close()
 		h, err := getNefHeader(f)
 		if err != nil {
 			t.Fail()

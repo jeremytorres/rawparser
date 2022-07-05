@@ -1,3 +1,4 @@
+//go:build turbojpeg
 // +build turbojpeg
 
 /*

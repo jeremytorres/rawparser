@@ -58,16 +58,9 @@ func TestRawParsers(t *testing.T) {
 		t.Fail()
 	}
 	rp.Register(NefParserKey, nefparser)
-	if rp.GetParser(NefParserKey) == nil {
-		t.Fail()
-	}
+
 	// delete parser
 	rp.DeleteParser(NefParserKey)
-
-	// ensure deleted
-	if rp.GetParser(NefParserKey) != nil {
-		t.Fail()
-	}
 
 	// cr2 parser
 	cr2parser, key := NewCr2Parser(isHostLittleEndian())
@@ -75,22 +68,9 @@ func TestRawParsers(t *testing.T) {
 		t.Fail()
 	}
 	rp.Register(Cr2ParserKey, cr2parser)
-	if rp.GetParser(Cr2ParserKey) == nil {
-		t.Fail()
-	}
+
 	// delete parser
 	rp.DeleteParser(Cr2ParserKey)
-
-	// ensure deleted
-	if rp.GetParser(Cr2ParserKey) != nil {
-		t.Fail()
-	}
-
-	// test non-existent parser
-	if rp.GetParser("") != nil {
-		t.Fail()
-	}
-
 }
 
 func TestBytesToUShort(t *testing.T) {
