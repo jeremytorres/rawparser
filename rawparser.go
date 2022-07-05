@@ -114,24 +114,24 @@ func (r rawParser) IsHostLittleEndian() bool {
 // lower-case file extension of the raw file type;
 // the value is the pointer to the RawParser implementation.
 type RawParsers struct {
-	parserMap map[string]RawParser
+	parserMap map[string]*RawParser
 }
 
 // NewRawParsers creates an instance of RawParsers.
 func NewRawParsers() *RawParsers {
 	p := new(RawParsers)
-	p.parserMap = make(map[string]RawParser)
+	p.parserMap = make(map[string]*RawParser)
 	return p
 }
 
 // Register maps the implementation of the RawParser
 // interface to the key.
-func (p *RawParsers) Register(key string, parser RawParser) {
+func (p *RawParsers) Register(key string, parser *RawParser) {
 	p.parserMap[key] = parser
 }
 
 // GetParser returns a RawParser for a given raw file type or nil if not found.
-func (p RawParsers) GetParser(key string) RawParser {
+func (p RawParsers) GetParser(key string) *RawParser {
 	return p.parserMap[key]
 }
 

@@ -57,7 +57,7 @@ func TestRawParsers(t *testing.T) {
 	if nefparser == nil || key != NefParserKey {
 		t.Fail()
 	}
-	rp.Register(NefParserKey, nefparser)
+	rp.Register(NefParserKey, &nefparser)
 
 	// delete parser
 	rp.DeleteParser(NefParserKey)
@@ -67,7 +67,7 @@ func TestRawParsers(t *testing.T) {
 	if cr2parser == nil || key != Cr2ParserKey {
 		t.Fail()
 	}
-	rp.Register(Cr2ParserKey, cr2parser)
+	rp.Register(Cr2ParserKey, &cr2parser)
 
 	// delete parser
 	rp.DeleteParser(Cr2ParserKey)

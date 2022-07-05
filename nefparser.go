@@ -54,7 +54,6 @@ type nefHeader struct {
 // NEF-specific information: http://lclevy.free.fr/nef/
 // TIFF specification: http://partners.adobe.com/public/developer/en/tiff/TIFF6.pdf
 type NefParser struct {
-	//	HostIsLittleEndian bool
 	*rawParser
 }
 
