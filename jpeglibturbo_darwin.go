@@ -28,8 +28,8 @@ package rawparser
 
 // Note: modify these flags for your enviornment if required.
 
-// #cgo CFLAGS: -I/usr/local/opt/jpeg-turbo/include -O2
-// #cgo LDFLAGS: -L/usr/local/opt/jpeg-turbo/lib -lturbojpeg
+// #cgo CFLAGS: -I/opt/homebrew/opt/jpeg-turbo/include -O2
+// #cgo LDFLAGS: -L/opt/homebrew/opt/jpeg-turbo/lib -lturbojpeg
 // #include "jpeg_wrapper.h"
 import "C"
 
